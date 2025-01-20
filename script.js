@@ -80,25 +80,15 @@ function renderCart() {
  *  Cart Manipulation
  ****************************/
 function addToCart(productId) {
-  const cart = getCart();
-
-  // Normal logic: add the clicked product
   const product = products.find((p) => p.id === parseInt(productId, 10));
-  if (product) cart.push(product);
+  if (!product) return;
 
-  // ADDITIONAL LOGIC: If productId === 1, also add productId = 5, plus another productId = 1
-  if (parseInt(productId, 10) === 1) {
-    const product5 = products.find((p) => p.id === 5);
-    const product1Again = products.find((p) => p.id === 1);
-
-    // Add them to the cart
-    cart.push(product5);
-    cart.push(product1Again);
-  }
-
-  saveCart(cart);
-  renderCart();
+  const cart = getCart();  // get array from sessionStorage
+  cart.push(product);      // add exactly one product
+  saveCart(cart);          // save updated array
+  renderCart();            // re-render cart on the page
 }
+
 
 function removeFromCart(productId) {
   let cart = getCart();
