@@ -19,19 +19,11 @@ const clearCartBtn = document.getElementById("clear-cart-btn");
 /****************************
  *  Session Storage Helpers
  ****************************/
-/**
- * Get cart items from sessionStorage.
- * If no cart is found, return an empty array.
- */
 function getCart() {
   const cartData = sessionStorage.getItem("cart");
   return cartData ? JSON.parse(cartData) : [];
 }
 
-/**
- * Save the current cart array to sessionStorage.
- * @param {Array} cart - The array of cart items to store.
- */
 function saveCart(cart) {
   sessionStorage.setItem("cart", JSON.stringify(cart));
 }
@@ -39,11 +31,7 @@ function saveCart(cart) {
 /****************************
  *  Rendering Functions
  ****************************/
-/**
- * Render the product list with an "Add to Cart" button for each product.
- */
 function renderProducts() {
-  // Clear existing products (if any) before re-rendering
   productList.innerHTML = "";
 
   products.forEach((product) => {
@@ -54,8 +42,8 @@ function renderProducts() {
     `;
     productList.appendChild(li);
   });
-  
-  // Add click event to each "Add to Cart" button
+
+  // Attach event listeners for "Add to Cart" buttons
   const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
   addToCartButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -65,11 +53,7 @@ function renderProducts() {
   });
 }
 
-/**
- * Render the cart list from sessionStorage.
- */
 function renderCart() {
-  // Clear existing cart items (if any) before re-rendering
   cartList.innerHTML = "";
 
   const cart = getCart();
@@ -82,9 +66,9 @@ function renderCart() {
     cartList.appendChild(li);
   });
 
-  // Add click events to each "Remove" button in the cart
-  const removeFromCartButtons = document.querySelectorAll(".remove-from-cart-btn");
-  removeFromCartButtons.forEach((button) => {
+  // Attach event listeners for "Remove" buttons
+  const removeButtons = document.querySelectorAll(".remove-from-cart-btn");
+  removeButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const productId = button.dataset.id;
       removeFromCart(productId);
@@ -95,63 +79,32 @@ function renderCart() {
 /****************************
  *  Cart Manipulation
  ****************************/
-/**
- * Add a product to the cart by productId.
- */
 function addToCart(productId) {
-  // Find the product in the products array
   const product = products.find((p) => p.id === parseInt(productId, 10));
   if (!product) return;
 
-  // Get current cart from sessionStorage
   const cart = getCart();
-
-  // Add the selected product to the cart array
   cart.push(product);
-
-  // Save updated cart to sessionStorage
   saveCart(cart);
-
-  // Re-render the cart on the page
   renderCart();
 }
 
-/**
- * Remove a product from the cart by productId.
- */
 function removeFromCart(productId) {
   let cart = getCart();
-
-  // Filter out the product to remove
   cart = cart.filter((item) => item.id !== parseInt(productId, 10));
-
-  // Save updated cart to sessionStorage
   saveCart(cart);
-
-  // Re-render the cart on the page
   renderCart();
 }
 
-/**
- * Clear the entire cart.
- */
 function clearCart() {
-  // Remove cart data from sessionStorage
   sessionStorage.removeItem("cart");
-
-  // Re-render the now-empty cart
   renderCart();
 }
 
 /****************************
  *  Initialize Page
  ****************************/
-// Render products on page load
 renderProducts();
-
-// Render the cart (if any) on page load
 renderCart();
 
-// Attach event listener for the "Clear Cart" button
 clearCartBtn.addEventListener("click", clearCart);
-
